@@ -1,18 +1,35 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+import { SplashScreen, Stack } from "expo-router";
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+import { useFonts } from "expo-font";
+import { useEffect } from "react";
+import GlobalProvider from "../../lib/global-provider";
+import "./global.css";
 
-SplashScreen.preventAutoHideAsync();
+export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    "Rubik-Bold": require("../../assets/fonts/Rubik-Bold.ttf"),
+    "Rubik-ExtraBold": require("../../assets/fonts/Rubik-ExtraBold.ttf"),
+    "Rubik-Medium": require("../../assets/fonts/Rubik-Medium.ttf"),
+    "Rubik-Light": require("../../assets/fonts/Rubik-Light.ttf"),
+    "Rubik-Regular": require("../../assets/fonts/Rubik-Regular.ttf"),
+    "Rubik-SemiBold": require("../../assets/fonts/Rubik-SemiBold.ttf"),
+  });
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) return null;
+
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <GlobalProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
+    </GlobalProvider>
   );
 }
